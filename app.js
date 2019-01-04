@@ -223,6 +223,7 @@ $(() => {
         break;
       case 32:
         $audio.src = 'pong.wav';
+        $audio.play();
         if(!ballInPlay) {
           ballInPlay = true;
           ballMovingInterval = setInterval(() => {
