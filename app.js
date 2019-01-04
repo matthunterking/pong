@@ -3,9 +3,9 @@ class Player {
     this.id = id;
     this.score = 0;
     this.$score = $(`<div class='scoreDisplay' id='player${id}Score'>0</div>`);
-    this.paddleLocation = {};
+    this.location = {};
     this.$paddle = $(`<div class='paddle' id='player${id}Paddle'></div>`);
-    this.length = 30;
+    this.length = 100;
   }
 
   move(direction) {
@@ -50,6 +50,19 @@ class Ball {
   checkCollision() {
     if(this.location.y + this.size >= playArea.height || this.location.y <= 0) {
       this.yVelocity *= -1;
+    }
+    console.log('ball top => ', this.location.y);
+    console.log('ball bottom => ', this.location.y + this.size);
+    console.log('paddle top => ', player2.location.y);
+    console.log('paddle bottom => ', player2.location.y + player2.length);
+    if(this.location.x >= player2.location.x &&
+    this.location.y + this.size >= player2.location.y &&
+    this.location.y <= player2.location.y + player2.length ||
+    this.location.x <= player1.location.x &&
+    this.location.y + this.size >= player1.location.y &&
+    this.location.y <= player1.location.y + player1.length
+    ) {
+      this.xVelocity *= -1;
     }
 
   }
@@ -97,8 +110,16 @@ function setUp() {
   $scoreBoard.append(player1.$score);
   $scoreBoard.append(player2.$score);
 
-  player1.$paddle.css({ top: `${player1.location.y}px`, left: `${player1.location.x}px` });
-  player2.$paddle.css({ top: `${player2.location.y}px`, left: `${player2.location.x}px` });
+  player1.$paddle.css({
+    top: `${player1.location.y}px`,
+    left: `${player1.location.x}px`,
+    height: `${player1.height}px`
+  });
+  player2.$paddle.css({
+    top: `${player2.location.y}px`,
+    left: `${player2.location.x}px`,
+    height: `${player2.height}px`
+  });
 
   ball1.$ball.css({
     top: `${ball1.location.y}px`,
@@ -138,7 +159,7 @@ $(() => {
 
   const serve = setInterval(() => {
     ball1.move();
-  }, 50);
+  }, 100);
 
   function score() {
     clearInterval(serve);
