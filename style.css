@@ -27,3 +27,8 @@ body {
   width: 1%;
   position: relative;
 }
+
+.ball {
+  background-color: white;
+  position: relative;
+}

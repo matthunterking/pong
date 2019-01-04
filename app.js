@@ -9,12 +9,25 @@ class Player {
   }
 }
 
+class Ball {
+  constructor(id) {
+    this.location = {
+      x: 11,
+      y: 50
+    };
+    this.size = 10;
+    this.$ball = $(`<div class='ball' id='ball${id}'></div>`);
+  }
+}
+
 $(() => {
 
   // set up the game
 
   const player1 = new Player(1);
   const player2 = new Player(2);
+
+  const ball1 = new Ball(1);
 
   const $scoreBoard = $('.scoreBoard');
   const $body = $('body');
@@ -35,9 +48,17 @@ $(() => {
 
   $body.append(player1.$paddle);
   $body.append(player2.$paddle);
+  $body.append(ball1.$ball);
 
   player1.$paddle.css({ top: `${player1.location.y}px`, left: `${player1.location.x}%` });
   player2.$paddle.css({ top: `${player2.location.y}px`, left: `${player2.location.x}%` });
+
+  ball1.$ball.css({
+    top: `${ball1.location.y}px`,
+    left: `${ball1.location.x}%`,
+    width: `${ball1.size}px`,
+    height: `${ball1.size}px`
+  });
 
 
 
