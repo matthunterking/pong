@@ -14,7 +14,6 @@ class Player {
 
   moveUp() {
     this.location.y -= 5;
-    console.log(this.location);
     this.$paddle.css({ top: `${this.location.y}px` });
   }
 
@@ -34,7 +33,7 @@ class Ball {
     this.size = 10;
     this.$ball = $(`<div class='ball' id='ball${id}'></div>`);
     this.xVelocity = 5;
-    this.yVelocity = 10;
+    this.yVelocity = 0;
   }
 
   move() {
@@ -51,17 +50,23 @@ class Ball {
     if(this.location.y + this.size >= playArea.height || this.location.y <= 0) {
       this.yVelocity *= -1;
     }
-    console.log('ball top => ', this.location.y);
-    console.log('ball bottom => ', this.location.y + this.size);
-    console.log('paddle top => ', player2.location.y);
-    console.log('paddle bottom => ', player2.location.y + player2.length);
-    if(this.location.x >= player2.location.x &&
-    this.location.y + this.size >= player2.location.y &&
-    this.location.y <= player2.location.y + player2.length ||
-    this.location.x <= player1.location.x &&
+    const player1Hit = this.location.x <= player1.location.x + this.size &&
     this.location.y + this.size >= player1.location.y &&
-    this.location.y <= player1.location.y + player1.length
-    ) {
+    this.location.y <= player1.location.y + player1.length;
+
+    const player2Hit = this.location.x >= player2.location.x  + this.size &&
+    this.location.y + this.size >= player2.location.y &&
+    this.location.y <= player2.location.y + player2.length;
+
+    if(player1Hit || player2Hit) {
+      const player = player1Hit ? player1 : player2;
+      if(this.location.y < player.location.y + player.length/4) {
+        this.yVelocity -= 5;
+      } else if(this.location.y > player.location.y + player.length - player.length/4) {
+        this.yVelocity += 5;
+      } else {
+        this.yVelocity = 0;
+      }
       this.xVelocity *= -1;
     }
 
@@ -159,7 +164,7 @@ $(() => {
 
   const serve = setInterval(() => {
     ball1.move();
-  }, 100);
+  }, 50);
 
   function score() {
     clearInterval(serve);
