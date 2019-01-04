@@ -1,3 +1,6 @@
+let ballMovingInterval;
+
+
 class Player {
   constructor(id) {
     this.id = id;
@@ -22,18 +25,24 @@ class Player {
     this.$paddle.css({ top: `${this.location.y}px` });
   }
 
+  scored() {
+    this.score ++;
+    this.$score.text(this.score);
+  }
+
 }
 
 class Ball {
   constructor(id) {
     this.location = {
-      x: 110,
-      y: 50
+      x: 120,
+      y: 250
     };
     this.size = 10;
     this.$ball = $(`<div class='ball' id='ball${id}'></div>`);
     this.xVelocity = 5;
     this.yVelocity = 0;
+    this.servedBy = 1;
   }
 
   move() {
@@ -70,7 +79,41 @@ class Ball {
       this.xVelocity *= -1;
     }
 
+    if(this.location.x > playArea.width) {
+      player1.scored();
+      this.reset(2);
+    }
+    if(this.location.x < 0) {
+      player2.scored();
+      this.reset(1);
+    }
+
   }
+
+  reset(player) {
+    clearInterval(ballMovingInterval);
+    ballInPlay = false;
+    if(player === 1) {
+      this.servedBy = 1;
+      this.location.x = player1.location.x + 20;
+      this.location.y = player1.location.y + (player1.length/2) + 3;
+      this.$ball.css({
+        top: `${this.location.y}px`,
+        left: `${this.location.x}px`
+      });
+    } else {
+      this.servedBy = 2;
+      this.xVelocity *= -1;
+      console.log(this.xVelocity);
+      this.location.x = player2.location.x;
+      this.location.y = player2.location.y + (player1.length/2) + 3;
+      this.$ball.css({
+        top: `${this.location.y}px`,
+        left: `${this.location.x}px`
+      });
+    }
+  }
+
 }
 
 
@@ -85,7 +128,10 @@ let $playArea;
 const player1 = new Player(1);
 const player2 = new Player(2);
 
+
 const ball1 = new Ball(1);
+
+let ballInPlay = false;
 
 function setUp() {
 
@@ -142,6 +188,7 @@ $(() => {
   setUp();
 
   $(window).keydown((e) => {
+    console.log(e.which);
     switch (e.which) {
       // ⬆️
       case 40:
@@ -159,15 +206,23 @@ $(() => {
       case 83:
         player1.move('down');
         break;
+      case 32:
+        console.log(ballInPlay);
+        if(!ballInPlay) {
+          ballInPlay = true;
+          ballMovingInterval = setInterval(() => {
+            if(ballInPlay) {
+              ball1.move();
+            }
+          }, 10);
+        }
+        break;
     }
   });
 
-  const serve = setInterval(() => {
-    ball1.move();
-  }, 50);
 
-  function score() {
-    clearInterval(serve);
-  }
+  // function score() {
+  //   clearInterval(serve);
+  // }
 
 });
