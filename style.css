@@ -1,12 +1,12 @@
 body {
   background-color: black;
-  width: 100%;
-  height: 100vh;
-  margin: 0px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
 }
 
 .scoreBoard {
-  position: absolute;
   height: 200px;
   width: 100%;
   background-color: grey;
@@ -31,4 +31,13 @@ body {
 .ball {
   background-color: white;
   position: relative;
+}
+
+.playArea {
+  width: 1000px;
+  height: 700px;
+  border: 2px solid white;
+  display: flex;
+  justify-content: left;
+  align-items: top;
 }

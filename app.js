@@ -28,16 +28,41 @@ class Player {
 class Ball {
   constructor(id) {
     this.location = {
-      x: 11,
+      x: 110,
       y: 50
     };
     this.size = 10;
     this.$ball = $(`<div class='ball' id='ball${id}'></div>`);
+    this.xVelocity = 5;
+    this.yVelocity = 10;
+  }
+
+  move() {
+    this.location.x += this.xVelocity;
+    this.location.y += this.yVelocity;
+    this.$ball.css({
+      top: `${ball1.location.y}px`,
+      left: `${ball1.location.x}px`
+    });
+    this.checkCollision();
+  }
+
+  checkCollision() {
+    if(this.location.y + this.size >= playArea.height || this.location.y <= 0) {
+      this.yVelocity *= -1;
+    }
+
   }
 }
 
+
+const playArea = {
+  width: 1000,
+  height: 700
+};
+
 let $scoreBoard;
-let $body;
+let $playArea;
 
 const player1 = new Player(1);
 const player2 = new Player(2);
@@ -46,33 +71,38 @@ const ball1 = new Ball(1);
 
 function setUp() {
 
-  $scoreBoard = $('.scoreBoard');
-  $body = $('body');
+  $scoreBoard = $('<div class="scoreBoard"></div>');
+  $playArea = $('.playArea');
 
   player1.location = {
-    x: 10,
+    x: 100,
     y: 200
   };
 
   player2.location = {
-    x: 80,
+    x: 900,
     y: 200
   };
 
+  playArea.$playArea = $('.playArea');
+
+  playArea.$playArea.css({ width: `${this.width}px`, height: `${this.height}px` });
+
+
+  $playArea.append(ball1.$ball);
+  $playArea.append(player1.$paddle);
+  $playArea.append(player2.$paddle);
+  $playArea.append($scoreBoard);
 
   $scoreBoard.append(player1.$score);
   $scoreBoard.append(player2.$score);
 
-  $body.append(player1.$paddle);
-  $body.append(player2.$paddle);
-  $body.append(ball1.$ball);
-
-  player1.$paddle.css({ top: `${player1.location.y}px`, left: `${player1.location.x}%` });
-  player2.$paddle.css({ top: `${player2.location.y}px`, left: `${player2.location.x}%` });
+  player1.$paddle.css({ top: `${player1.location.y}px`, left: `${player1.location.x}px` });
+  player2.$paddle.css({ top: `${player2.location.y}px`, left: `${player2.location.x}px` });
 
   ball1.$ball.css({
     top: `${ball1.location.y}px`,
-    left: `${ball1.location.x}%`,
+    left: `${ball1.location.x}px`,
     width: `${ball1.size}px`,
     height: `${ball1.size}px`
   });
@@ -106,6 +136,12 @@ $(() => {
     }
   });
 
+  const serve = setInterval(() => {
+    ball1.move();
+  }, 50);
 
+  function score() {
+    clearInterval(serve);
+  }
 
 });
