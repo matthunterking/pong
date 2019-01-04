@@ -20,20 +20,18 @@ class Ball {
   }
 }
 
-$(() => {
+let $scoreBoard;
+let $body;
 
-  // set up the game
+const player1 = new Player(1);
+const player2 = new Player(2);
 
-  const player1 = new Player(1);
-  const player2 = new Player(2);
+const ball1 = new Ball(1);
 
-  const ball1 = new Ball(1);
+function setUp() {
 
-  const $scoreBoard = $('.scoreBoard');
-  const $body = $('body');
-
-  $scoreBoard.append(player1.$score);
-  $scoreBoard.append(player2.$score);
+  $scoreBoard = $('.scoreBoard');
+  $body = $('body');
 
   player1.location = {
     x: 10,
@@ -45,6 +43,9 @@ $(() => {
     y: 200
   };
 
+
+  $scoreBoard.append(player1.$score);
+  $scoreBoard.append(player2.$score);
 
   $body.append(player1.$paddle);
   $body.append(player2.$paddle);
@@ -60,10 +61,13 @@ $(() => {
     height: `${ball1.size}px`
   });
 
+}
 
+$(() => {
 
+  // set up the game
 
-
+  setUp();
 
 
 
