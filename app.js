@@ -1,6 +1,7 @@
 let ballMovingInterval;
 
 
+
 class Player {
   constructor(id) {
     this.id = id;
@@ -16,16 +17,26 @@ class Player {
   }
 
   moveUp() {
+    if(!ballInPlay && ball1.servedBy === this.id) {
+      ball1.location.y -= 5;
+      ball1.$ball.css({ top: `${ball1.location.y}px` });
+    }
     this.location.y -= 5;
     this.$paddle.css({ top: `${this.location.y}px` });
   }
 
   moveDown() {
+    if(!ballInPlay && ball1.servedBy === this.id) {
+      ball1.location.y += 5;
+      ball1.$ball.css({ top: `${ball1.location.y}px` });
+    }
     this.location.y += 5;
     this.$paddle.css({ top: `${this.location.y}px` });
   }
 
   scored() {
+    $('audio').attr('src', 'score.wav');
+    $audio.play();
     this.score ++;
     this.$score.text(this.score);
   }
@@ -58,6 +69,7 @@ class Ball {
   checkCollision() {
     if(this.location.y + this.size >= playArea.height || this.location.y <= 0) {
       this.yVelocity *= -1;
+      $audio.play();
     }
     const player1Hit = this.location.x <= player1.location.x + this.size &&
     this.location.y + this.size >= player1.location.y &&
@@ -69,6 +81,7 @@ class Ball {
 
     if(player1Hit || player2Hit) {
       const player = player1Hit ? player1 : player2;
+      $audio.play();
       if(this.location.y < player.location.y + player.length/4) {
         this.yVelocity -= 5;
       } else if(this.location.y > player.location.y + player.length - player.length/4) {
@@ -124,6 +137,7 @@ const playArea = {
 
 let $scoreBoard;
 let $playArea;
+let $audio;
 
 const player1 = new Player(1);
 const player2 = new Player(2);
@@ -137,6 +151,7 @@ function setUp() {
 
   $scoreBoard = $('<div class="scoreBoard"></div>');
   $playArea = $('.playArea');
+  $audio = $('audio')[0];
 
   player1.location = {
     x: 100,
@@ -207,7 +222,7 @@ $(() => {
         player1.move('down');
         break;
       case 32:
-        console.log(ballInPlay);
+        $audio.src = 'pong.wav';
         if(!ballInPlay) {
           ballInPlay = true;
           ballMovingInterval = setInterval(() => {
