@@ -18,19 +18,19 @@ class Player {
 
   moveUp() {
     if(!ballInPlay && ball1.servedBy === this.id) {
-      ball1.location.y -= 5;
+      ball1.location.y -= 15;
       ball1.$ball.css({ top: `${ball1.location.y}px` });
     }
-    this.location.y -= 5;
+    this.location.y -= 15;
     this.$paddle.css({ top: `${this.location.y}px` });
   }
 
   moveDown() {
     if(!ballInPlay && ball1.servedBy === this.id) {
-      ball1.location.y += 5;
+      ball1.location.y += 15;
       ball1.$ball.css({ top: `${ball1.location.y}px` });
     }
-    this.location.y += 5;
+    this.location.y += 15;
     this.$paddle.css({ top: `${this.location.y}px` });
   }
 
@@ -106,6 +106,8 @@ class Ball {
   reset(player) {
     clearInterval(ballMovingInterval);
     ballInPlay = false;
+    this.xVelocity = 5;
+    this.yVelocity = 0;
     if(player === 1) {
       this.servedBy = 1;
       this.location.x = player1.location.x + 20;
@@ -118,8 +120,8 @@ class Ball {
       this.servedBy = 2;
       this.xVelocity *= -1;
       console.log(this.xVelocity);
-      this.location.x = player2.location.x;
-      this.location.y = player2.location.y + (player1.length/2) + 3;
+      this.location.x = player2.location.x + 8;
+      this.location.y = player2.location.y + (player1.length/2) + 5;
       this.$ball.css({
         top: `${this.location.y}px`,
         left: `${this.location.x}px`
