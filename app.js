@@ -1,4 +1,13 @@
 let ballMovingInterval;
+let bonusInterval;
+
+const bonus = {
+  $bonusDisplay: $('<div class="bonus"><- -></div>'),
+  location: {
+    y: 0,
+    x: 500
+  }
+};
 
 
 
@@ -91,6 +100,22 @@ class Ball {
       }
       this.xVelocity *= -1;
     }
+    if(bonus) {
+      if(this.location.y >= bonus.location.y &&
+        this.location.y <= bonus.location.y + 20 &&
+        this.location.x >= 475 && this.location.x <= 525
+      ) {
+        bonus.$bonusDisplay.remove();
+        bonus.location.y = 0;
+        if(this.xVelocity > 0) {
+          player1.length += 20;
+          player1.$paddle.css('height', `${player1.length}px`);
+        } else {
+          player2.length += 20;
+          player2.$paddle.css('height', `${player2.length}px`);
+        }
+      }
+    }
 
     if(this.location.x > playArea.width) {
       player1.scored();
@@ -105,6 +130,12 @@ class Ball {
 
   reset(player) {
     clearInterval(ballMovingInterval);
+    bonus.$bonusDisplay.remove();
+    bonus.location.y = 0;
+    player1.length = 100;
+    player1.$paddle.css('height', `${player1.length}px`);
+    player2.length = 100;
+    player2.$paddle.css('height', `${player2.length}px`);
     ballInPlay = false;
     this.xVelocity = 5;
     this.yVelocity = 0;
@@ -140,6 +171,7 @@ const playArea = {
 let $scoreBoard;
 let $playArea;
 let $audio;
+let $bonusArea;
 
 const player1 = new Player(1);
 const player2 = new Player(2);
@@ -154,6 +186,8 @@ function setUp() {
   $scoreBoard = $('<div class="scoreBoard"></div>');
   $playArea = $('.playArea');
   $audio = $('audio')[0];
+
+  $bonusArea = $('<div class="bonusArea"></div>');
 
   player1.location = {
     x: 100,
@@ -174,6 +208,7 @@ function setUp() {
   $playArea.append(player1.$paddle);
   $playArea.append(player2.$paddle);
   $playArea.append($scoreBoard);
+  $playArea.append($bonusArea);
 
   $scoreBoard.append(player1.$score);
   $scoreBoard.append(player2.$score);
@@ -233,14 +268,27 @@ $(() => {
               ball1.move();
             }
           }, 10);
+          addBonus();
         }
         break;
     }
   });
 
 
-  // function score() {
-  //   clearInterval(serve);
-  // }
+  function addBonus() {
+    setTimeout(() => {
+      bonus.location.y = Math.floor(Math.random() * 600);
+      bonus.$bonusDisplay.css({ top: `${bonus.location.y}px` });
+      $bonusArea.append(bonus.$bonusDisplay);
+      setTimeout(() => {
+        bonus.$bonusDisplay.remove();
+        bonus.location.y = 0;
+        if(ballInPlay) {
+          addBonus();
+        }
+      }, 3000);
+    }, Math.random() + 1 * 5000);
+
+  }
 
 });
