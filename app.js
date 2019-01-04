@@ -7,6 +7,22 @@ class Player {
     this.$paddle = $(`<div class='paddle' id='player${id}Paddle'></div>`);
     this.length = 30;
   }
+
+  move(direction) {
+    direction === 'up' ? this.moveUp() : this.moveDown();
+  }
+
+  moveUp() {
+    this.location.y -= 5;
+    console.log(this.location);
+    this.$paddle.css({ top: `${this.location.y}px` });
+  }
+
+  moveDown() {
+    this.location.y += 5;
+    this.$paddle.css({ top: `${this.location.y}px` });
+  }
+
 }
 
 class Ball {
@@ -68,6 +84,27 @@ $(() => {
   // set up the game
 
   setUp();
+
+  $(window).keydown((e) => {
+    switch (e.which) {
+      // ⬆️
+      case 40:
+        player2.move('down');
+        break;
+      // ⬇️
+      case 38:
+        player2.move('up');
+        break;
+      // W
+      case 87:
+        player1.move('up');
+        break;
+      // S
+      case 83:
+        player1.move('down');
+        break;
+    }
+  });
 
 
 
